@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+    --font-sans: "Outfit", "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif;
+
+    --color-brand-primary: #8b5cf6;
+    --color-brand-secondary: #3b82f6;
+    --color-brand-accent: #10b981;
+}
+
+@layer base {
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+        --panel-bg: #0f172a;
+        --panel-border: rgba(255, 255, 255, 0.08);
+        --panel-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+        --body-bg: #030712;
+        --text-main: #e2e8f0;
+        --text-muted: #94a3b8;
+    }
+
+    [data-theme="light"] {
+        --panel-bg: #ffffff;
+        --panel-border: rgba(15, 23, 42, 0.08);
+        --panel-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.1);
+        --body-bg: #f8fafc;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+    }
+
+    body {
+        @apply font-sans antialiased;
+        background-color: var(--body-bg);
+        color: var(--text-main);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply rounded-full transition-colors;
+        background-color: var(--panel-border);
+    }
+}
+
+@layer utilities {
+
+    .glass,
+    .panel {
+        background: var(--panel-bg);
+        border: 1px solid var(--panel-border);
+        box-shadow: var(--panel-shadow);
+    }
+
+    .glass-card,
+    .panel-card {
+        @apply glass rounded-2xl p-6 transition-all duration-300;
+        color: var(--text-main);
+    }
+
+    .panel-card:hover {
+        @apply border-violet-500/40 shadow-violet-500/5;
+    }
+
+    .text-main {
+        color: var(--text-main);
+    }
+
+    .text-muted {
+        color: var(--text-muted);
+    }
+
+    .text-gradient {
+        @apply bg-gradient-to-r from-violet-400 via-blue-400 to-emerald-400 bg-clip-text text-transparent;
+    }
+
+    .bg-mesh {
+        background-color: var(--body-bg);
+        background-image:
+            radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.05) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.05) 0px, transparent 50%);
+    }
+
+    .hero-glow {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(139, 92, 246, 0.3) 0%, transparent 70%);
+        filter: blur(60px);
+        z-index: -1;
+    }
+}
+
+/* DaisyUI Overrides for SiteCheck */
+.btn {
+    @apply rounded-xl font-semibold transition-all duration-300;
+}
+
+.btn-primary {
+    @apply bg-gradient-to-r from-violet-600 to-blue-600 border-none hover:opacity-90 hover:scale-105 shadow-lg shadow-violet-900/20;
+}
+
+.input,
+.textarea,
+.select {
+    @apply bg-white/5 [data-theme=light]:bg-slate-50 border-white/10 [data-theme=light]:border-slate-200 focus:border-violet-500/50 transition-all rounded-xl;
+    color: var(--text-main);
+}
