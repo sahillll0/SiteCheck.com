@@ -49,7 +49,7 @@ export const useAnalyzeStore = create((set, get) => ({
         try {
             const res = await axiosInstance.get(`/analyze/${id}`);
             set({ currentReport: res.data, isFetchingReports: false });
-        } catch (error) {
+        } catch {
             set({ isFetchingReports: false });
             toast.error("Failed to load report");
         }
