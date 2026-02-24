@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-    baseURL:"http://localhost:8001/api",
+    baseURL: "https://site-check-api.vercel.app/api",
     withCredentials: true,
 });
