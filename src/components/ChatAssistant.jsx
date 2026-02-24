@@ -40,7 +40,10 @@ const ChatAssistant = () => {
                                 <Sparkles className="size-5 text-violet-400" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-main">SiteCheck Assistant</h3>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="font-bold text-main">SiteCheck Assistant</h3>
+                                    <span className="px-1.5 py-0.5 rounded-md bg-violet-500/10 text-violet-400 text-[10px] font-bold border border-violet-500/20">BETA</span>
+                                </div>
                                 <div className="flex items-center gap-1.5">
                                     <div className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                     <span className="text-[10px] text-muted uppercase font-black tracking-widest">Active Now</span>

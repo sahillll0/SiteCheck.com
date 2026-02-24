@@ -78,10 +78,14 @@ export const useAuthStore = create((set) => ({
         set({ isUpdatingPassword: true });
         try {
             await axiosInstance.put("/auth/change-password", data);
-            toast.success("Password updated successfully");
+            toast.success("Password updated successfully. Please login again.");
+            // Log out the user so they have to login with new password
+            await useAuthStore.getState().logout();
+            return true;
         } catch (error) {
             console.log("error in change password:", error);
             toast.error(error.response?.data?.message || "Password update failed");
+            return false;
         } finally {
             set({ isUpdatingPassword: false });
         }

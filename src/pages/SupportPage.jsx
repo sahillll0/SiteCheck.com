@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { MessageSquare, Send, Mail, Sparkles, Loader2 } from "lucide-react";
+import { MessageSquare, Send, Mail, Sparkles, Loader2, Check } from "lucide-react";
 import toast from "react-hot-toast";
+import { axiosInstance } from "../lib/axios";
 
 const SupportPage = () => {
     const { authUser } = useAuthStore();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
     const [formData, setFormData] = useState({
         name: authUser?.fullName || "",
         email: authUser?.email || "",
@@ -16,13 +18,38 @@ const SupportPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Mock submission
-        setTimeout(() => {
-            toast.success("Support message sent! We'll get back to you soon.");
+        try {
+            await axiosInstance.post("/support/message", formData);
+            toast.success("Support message sent!");
+            setSubmitted(true);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Failed to send message");
+        } finally {
             setIsSubmitting(false);
-            setFormData({ ...formData, subject: "", message: "" });
-        }, 1000);
+        }
     };
+
+    if (submitted) {
+        return (
+            <div className="container mx-auto px-4 py-24 max-w-2xl text-center">
+                <div className="inline-flex size-24 items-center justify-center rounded-full bg-emerald-500/10 mb-8 border border-emerald-500/10">
+                    <Check className="size-12 text-emerald-400" />
+                </div>
+                <h1 className="text-5xl font-black mb-6 tracking-tight text-main">
+                    Thank <span className="text-gradient">You!</span>
+                </h1>
+                <p className="text-muted text-xl font-light leading-relaxed mb-10">
+                    Your message has been received. Our team will review your request and get back to you at <strong>{formData.email}</strong> as soon as possible.
+                </p>
+                <button
+                    onClick={() => setSubmitted(false)}
+                    className="btn btn-primary h-14 px-10 rounded-2xl shadow-xl shadow-violet-500/20"
+                >
+                    Send Another Message
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="container mx-auto px-4 py-12 max-w-5xl">

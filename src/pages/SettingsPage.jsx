@@ -1,6 +1,7 @@
 import { useThemeStore } from "../store/useThemeStore";
 import { useAuthStore } from "../store/useAuthStore";
 import { Lock, Eye, EyeOff, Check, Moon, Sun, Sparkles, Shield, Palette, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const THEMES = ["light", "dark"];
@@ -8,6 +9,7 @@ const THEMES = ["light", "dark"];
 const SettingsPage = () => {
     const { theme, setTheme } = useThemeStore();
     const { changePassword, isUpdatingPassword } = useAuthStore();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         oldPassword: "",
@@ -29,9 +31,12 @@ const SettingsPage = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        changePassword(formData);
+        const success = await changePassword(formData);
+        if (success) {
+            navigate("/login");
+        }
     };
 
     return (
