@@ -19,7 +19,7 @@ const SupportPage = () => {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            await axiosInstance.post("/support/message", formData);
+            await axiosInstance.post("/send", formData);
             toast.success("Support message sent!");
             setSubmitted(true);
         } catch (error) {
