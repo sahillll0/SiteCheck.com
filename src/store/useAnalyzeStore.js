@@ -9,7 +9,7 @@ export const useAnalyzeStore = create((set, get) => ({
     isFetchingReports: false,
     error: null,
 
-    analyzeUrl: async (url) => {
+    analyzeWebsite: async (url) => {
         set({ isAnalyzing: true, error: null });
         try {
             const res = await axiosInstance.post("/analyze", { url });

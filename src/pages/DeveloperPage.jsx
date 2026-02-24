@@ -106,34 +106,52 @@ const DeveloperPage = () => {
                     </div>
                 </div>
 
-                {/* Stats & Bento Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Stats & Bento Grid Section */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* GitHub Stats Card */}
-                    <div className="md:col-span-2 bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 overflow-hidden relative group hover:border-zinc-700 transition-colors">
-                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                            <Command className="w-5 h-5 text-purple-400" />
+                    <div className="md:col-span-2 bg-zinc-900/40 border border-zinc-800/50 rounded-3xl p-8 overflow-hidden relative group hover:border-purple-500/30 transition-all duration-500 shadow-2xl">
+                        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <Github className="size-24" />
+                        </div>
+
+                        <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-3">
+                            <div className="p-2 rounded-lg bg-purple-500/10">
+                                <Command className="w-5 h-5 text-purple-400" />
+                            </div>
                             GitHub Contributions
                         </h3>
-                        <div className="w-full overflow-hidden rounded-lg opacity-80 group-hover:opacity-100 transition-opacity">
+
+                        <div className="w-full flex items-center justify-center min-h-[160px] bg-black/20 rounded-2xl p-4 transition-all duration-500 group-hover:scale-[1.01]">
                             <img
-                                src="https://github-readme-stats.vercel.app/api?username=sahillll0&show_icons=true&theme=transparent&hide_border=true&title_color=fff&text_color=a1a1aa&icon_color=a855f7&bg_color=00000000"
-                                alt="GitHub Stats"
-                                className="w-full h-full"
+                                src="https://github-readme-stats.vercel.app/api?username=sahillll0&show_icons=true&theme=dark&hide_border=true&title_color=a855f7&text_color=a1a1aa&icon_color=a855f7&bg_color=00000000"
+                                alt="Sahil's GitHub Stats"
+                                className="max-w-full h-auto"
+                                loading="lazy"
+                                onError={(e) => {
+                                    e.target.src = "https://github-readme-stats.vercel.app/api?username=sahillll0&show_icons=true&theme=dark";
+                                }}
                             />
                         </div>
                     </div>
 
-                    {/* Top Languages */}
-                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 hover:border-zinc-700 transition-colors flex flex-col justify-center">
-                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                            <Code2 className="w-5 h-5 text-blue-400" />
-                            Top Languages
+                    {/* Top Languages Card */}
+                    <div className="bg-zinc-900/40 border border-zinc-800/50 rounded-3xl p-8 hover:border-blue-500/30 transition-all duration-500 shadow-2xl flex flex-col">
+                        <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-3">
+                            <div className="p-2 rounded-lg bg-blue-500/10">
+                                <Code2 className="w-5 h-5 text-blue-400" />
+                            </div>
+                            Tech Stack
                         </h3>
-                        <div className="w-full overflow-hidden rounded-lg opacity-80 hover:opacity-100 transition-opacity">
+
+                        <div className="w-full flex-1 flex items-center justify-center bg-black/20 rounded-2xl p-4 transition-all duration-500 hover:scale-[1.05]">
                             <img
-                                src="https://github-readme-stats.vercel.app/api/top-langs/?username=sahillll0&layout=compact&theme=transparent&hide_border=true&title_color=fff&text_color=a1a1aa&icon_color=3b82f6&bg_color=00000000"
-                                alt="Top Languages"
-                                className="w-full h-full scale-110"
+                                src="https://github-readme-stats.vercel.app/api/top-langs?username=sahillll0&layout=compact&theme=dark&hide_border=true&title_color=3b82f6&text_color=a1a1aa&icon_color=3b82f6&bg_color=00000000"
+                                alt="Sahil's Top Languages"
+                                className="max-w-full h-auto"
+                                loading="lazy"
+                                onError={(e) => {
+                                    e.target.src = "https://github-readme-stats.vercel.app/api/top-langs?username=sahillll0&layout=compact&theme=dark";
+                                }}
                             />
                         </div>
                     </div>

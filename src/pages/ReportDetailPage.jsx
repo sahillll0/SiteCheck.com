@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAnalyzeStore } from "../store/useAnalyzeStore";
 import {
-    ArrowLeft, CheckCircle, AlertTriangle, FileText, Smartphone, Shield, Share2, Search, Layout, Type, Zap, Loader2, Rocket, Code, Box, Globe, Image
+    ArrowLeft, CheckCircle, AlertTriangle, FileText, Smartphone, Shield, Share2, Search, Layout, Type, Zap, Loader2, Rocket, Code, Box, Globe, Image, Download
 } from "lucide-react";
+import toast from "react-hot-toast";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 import ScoreDisplay from "../components/ScoreDisplay";
 
 const MetricItem = ({ label, value, icon: IconComponent, color }) => {
@@ -22,7 +25,6 @@ const MetricItem = ({ label, value, icon: IconComponent, color }) => {
 };
 
 const Section = ({ title, icon: IconComponent, children }) => {
-    // Standardizing component using IconComponent safely
     const IconComp = IconComponent;
     return (
         <div className="panel-card overflow-hidden mb-8 p-0 bg-slate-900 [data-theme=light]:bg-white border-white/5 [data-theme=light]:border-slate-200 shadow-2xl">
@@ -43,6 +45,8 @@ const ReportDetailPage = () => {
     const { id } = useParams();
     const { getReport, currentReport, isFetchingReports } = useAnalyzeStore();
     const [activeTab, setActiveTab] = useState("overview");
+    const [isExportingPDF, setIsExportingPDF] = useState(false);
+    const reportRef = useRef(null);
 
     useEffect(() => {
         if (id) {
@@ -68,13 +72,69 @@ const ReportDetailPage = () => {
         { id: "security", label: "Security", icon: Shield },
     ];
 
+    const handleExportPDF = async () => {
+        console.log("PDF Export initiated...");
+        if (!reportRef.current) {
+            console.error("Report reference is null");
+            toast.error("Report content not found");
+            return;
+        }
+
+        setIsExportingPDF(true);
+        const toastId = toast.loading("Preparing your PDF report...");
+
+        try {
+            console.log("Capturing canvas with html2canvas...");
+            // Wait for any pending renders
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            const canvas = await html2canvas(reportRef.current, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: "#0f172a",
+                logging: true, // Enable logging for debugging
+                allowTaint: true,
+                onclone: (clonedDoc) => {
+                    // Hide elements that shouldn't be in PDF
+                    clonedDoc.querySelectorAll('.no-print').forEach(el => el.style.display = 'none');
+                }
+            });
+
+            if (!canvas) {
+                throw new Error("Canvas generation failed");
+            }
+            console.log("Canvas generated successfully");
+
+            const imgData = canvas.toDataURL("image/png");
+            console.log("Image data generated");
+
+            const pdf = new jsPDF({
+                orientation: "portrait",
+                unit: "px",
+                format: [canvas.width, canvas.height]
+            });
+
+            pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+            const fileName = `sitecheck-report-${domain || "analysis"}.pdf`;
+            console.log(`Saving PDF as ${fileName}`);
+            pdf.save(fileName);
+
+            toast.success("PDF Report downloaded!", { id: toastId });
+        } catch (error) {
+            console.error("PDF Export error details:", error);
+            toast.error(`Export failed: ${error.message || "Unknown error"}`, { id: toastId });
+        } finally {
+            setIsExportingPDF(false);
+        }
+    };
+
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div ref={reportRef} className="container mx-auto px-4 py-8 max-w-6xl">
             <div className="space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-white/5 [data-theme=light]:border-slate-200">
                     <div className="space-y-4">
-                        <Link to="/" className="inline-flex items-center gap-2 text-slate-400 [data-theme=light]:text-slate-500 hover:text-violet-400 transition-colors text-sm font-medium group">
+                        <Link to="/" className="inline-flex items-center gap-2 text-slate-400 [data-theme=light]:text-slate-500 hover:text-violet-400 transition-colors text-sm font-medium group no-print">
                             <ArrowLeft className="size-4 group-hover:-translate-x-1 transition-transform" />
                             Back to Reports
                         </Link>
@@ -93,7 +153,7 @@ const ReportDetailPage = () => {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 no-print">
                         <a
                             href={url}
                             target="_blank"
@@ -103,22 +163,30 @@ const ReportDetailPage = () => {
                             <Globe className="size-4" />
                             Live Site
                         </a>
-                        <button className="btn btn-primary h-12 px-6 gap-2">
-                            <Share2 className="size-4" />
-                            Export
+                        <button
+                            onClick={handleExportPDF}
+                            disabled={isExportingPDF}
+                            className="btn btn-primary h-12 px-8 gap-3 shadow-xl shadow-violet-500/20"
+                        >
+                            {isExportingPDF ? (
+                                <Loader2 className="size-5 animate-spin" />
+                            ) : (
+                                <Download className="size-5" />
+                            )}
+                            <span className="font-bold uppercase tracking-wide text-xs">Download PDF</span>
                         </button>
                     </div>
                 </div>
 
                 {/* Quick Navigation */}
-                <div className="flex flex-wrap gap-4 mb-12 overflow-x-auto pb-2 scrollbar-none">
+                <div className="flex flex-wrap gap-4 mb-12 overflow-x-auto pb-2 scrollbar-none no-print">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex items-center gap-2 px-6 py-3 rounded-2xl whitespace-nowrap transition-all border font-bold ${activeTab === tab.id
-                                ? "bg-violet-600 border-violet-500 text-white shadow-xl shadow-violet-500/10"
-                                : "bg-slate-900 [data-theme=light]:bg-white border-white/5 [data-theme=light]:border-slate-200 text-muted hover:text-white [data-theme=light]:hover:text-slate-900 hover:bg-slate-800 [data-theme=light]:hover:bg-slate-50"
+                                    ? "bg-violet-600 border-violet-500 text-white shadow-xl shadow-violet-500/10"
+                                    : "bg-slate-900 [data-theme=light]:bg-white border-white/5 [data-theme=light]:border-slate-200 text-muted hover:text-white [data-theme=light]:hover:text-slate-900 hover:bg-slate-800 [data-theme=light]:hover:bg-slate-50"
                                 }`}
                         >
                             <tab.icon className="size-4" />
@@ -169,7 +237,7 @@ const ReportDetailPage = () => {
                                                 </div>
                                             ))}
                                             {issues.length > 4 && (
-                                                <button onClick={() => setActiveTab("seo")} className="w-full py-4 text-sm font-bold text-slate-500 hover:text-violet-400 transition-colors">
+                                                <button onClick={() => setActiveTab("seo")} className="w-full py-4 text-sm font-bold text-slate-500 hover:text-violet-400 transition-colors no-print">
                                                     View all {issues.length} issues →
                                                 </button>
                                             )}
@@ -285,6 +353,13 @@ const ReportDetailPage = () => {
                     )}
                 </div>
             </div>
+
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                @media print {
+                    .no-print { display: none !important; }
+                }
+            `}} />
         </div>
     );
 };
