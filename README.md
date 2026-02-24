@@ -77,7 +77,7 @@ Frontend displays results in a clean dashboard
 
 Frontend
 
-.Next.js
+.React
 
 .Tailwind CSS
 
