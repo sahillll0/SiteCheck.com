@@ -8,8 +8,8 @@ SiteCheck helps developers, freelancers, and businesses quickly understand how w
 
 🔗 Live Demo
 
-👉 https://sitecheck-com.vercel.app/
-(Replace with your actual deployed URL if different)
+👉 https://site-check-com.vercel.app/
+
 
 🚀 Features
 
